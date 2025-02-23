@@ -2,18 +2,12 @@ from __future__ import annotations
 
 class State():
 
-    __state_name: str
-    __isFinalState: bool | None
-    __isInitState: bool
-    __transitions: list[dict[str, State]]
-    # __state_output: str | None
-
     def __init__(self, state_name: str, isInitState: bool, 
                  isFinalState: bool | None = None):
-        self.__state_name = state_name
-        self.__isInitState = isInitState
-        self.__isFinalState = isFinalState
-        self.__transitions = list(dict())
+        self.__state_name: str = state_name
+        self.__isInitState: bool | None = isInitState
+        self.__isFinalState: bool = isFinalState
+        self.__transitions: list[dict[str, State]] = list(dict())
         # self.__state_output = state_output
 
     def __str__(self) -> str:
@@ -59,11 +53,9 @@ class State():
 
 class MealyState(State):
 
-    __outputs_list: list[dict[str, str]]
-
     def __init__(self, state_name: str, isInitState: bool) -> None:
         super().__init__(state_name, isInitState)
-        self.__outputs_list = list(dict())
+        self.__outputs_list: list[dict[str, str]] = list(dict())
     
     # override and overload
     def add_transition(self, state: State, input_char: str, output_char: str) -> None:
@@ -98,3 +90,31 @@ class MealyState(State):
             ctr += 1
 
 
+class MooreState(State):
+
+    def __init__(self, state_name: str, isInitState: bool, state_output:str) -> None:
+        super().__init__(state_name, isInitState)
+        self.__state_output: str = state_output
+    
+    # reuse add_transition method of state class
+    def add_transition(self, state: State, input_char: str) -> None:
+        super().add_transition(state, input_char)
+
+    #override
+    def get_next_trans(self, input_char: str) -> MooreState:
+        return super().get_next_trans(input_char)
+    
+    def get_state_output(self) -> str:
+        return self.__state_output
+
+    def display_transition(self) -> None:
+        if super().isInitState():
+            print(f" -{super().get_stateName()},{self.get_state_output()} | ", end="")
+        else:
+            print(f"  {super().get_stateName()},{self.get_state_output()} | ", end="")
+
+        for trans in super().get_transitions():
+
+            for _, value in trans.items():
+                print(f"{value} | ", end="")
+    
