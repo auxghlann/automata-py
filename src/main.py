@@ -1,6 +1,6 @@
 from src.finite_automata.fa import DFA
 
-def main():
+def main() -> None:
     
     states: int = int()
     input_alpha: list[str] = list()
