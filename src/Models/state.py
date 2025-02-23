@@ -28,13 +28,14 @@ class State():
     def isInitState(self) -> bool:
         return self.__isInitState
 
-    def add_transition(self, state: State, input: str) -> None:
-        state_dict: dict[str, State] = {input : state}
-        self.__transitions.append(state_dict)
+    def add_transition(self, state: State, input_char: str) -> None:
+        state_trans: dict[str, State] = {input_char : state}
+        self.__transitions.append(state_trans)
 
+    def get_transitions(self):
+        return self.__transitions
     
     def get_next_trans(self, input_char: str) -> State:
-
         for trans in self.__transitions:
             if input_char in trans:
                 return trans[input_char]
@@ -42,7 +43,6 @@ class State():
         raise ValueError(f"Did not find next transition for input {input_char}")
 
     def display_transition(self) -> None:
-
         if self.isInitState():
             print(f" -{self.get_stateName()} | ", end="")
         elif self.isFinalState():
@@ -55,4 +55,46 @@ class State():
             for _, value in trans.items():
                 print(f"{value} | ", end="")
 
-                
+
+
+class MealyState(State):
+
+    __outputs_list: list[dict[str, str]]
+
+    def __init__(self, state_name: str, isInitState: bool) -> None:
+        super().__init__(state_name, isInitState)
+        self.__outputs_list = list(dict())
+    
+    # override and overload
+    def add_transition(self, state: State, input_char: str, output_char: str) -> None:
+        super().add_transition(state, input_char)
+        state_trans: dict[str, str] = {input_char : output_char}
+        self.__outputs_list.append(state_trans)
+    
+    #override
+    def get_next_trans(self, input_char: str) -> MealyState:
+        return super().get_next_trans(input_char)
+
+    def get_curr_output(self, input_char: str) -> str:
+        for outputs in self.__outputs_list:
+            if input_char in outputs:
+                return outputs[input_char]
+        
+        raise ValueError(f"Did not find output for input {input_char}")
+
+    #override
+    def display_transition(self) -> None:
+        if super().isInitState():
+            print(f" -{super().get_stateName()} | ", end="")
+        else:
+            print(f"  {super().get_stateName()} | ", end="")
+
+        ctr: int = 0
+        for trans in super().get_transitions():
+
+            for key, value in trans.items():
+                print(f" {value},{self.__outputs_list[ctr].get(key)}  | ", end="")
+
+            ctr += 1
+
+
