@@ -4,16 +4,16 @@ from src.base.finiteAutomata import BaseFiniteAutomata
 
 class DFA(BaseFiniteAutomata):
 
-    _states: int
+    _num_of_states: int
     _input_alpha: list[str]
     _init_states: list[str] 
     _final_states: list[str] | None
     _transition_table: list[State]
 
 
-    def __init__(self, states: int,  input_alpha: list[str], init_states: list[str],
+    def __init__(self, num_of_states: int,  input_alpha: list[str], init_states: list[str],
                     final_states: list[str] | None = None) -> None:
-        self._states = states
+        self._num_of_states = num_of_states
         self._input_alpha = input_alpha
         self._init_states = init_states
         self._final_states = final_states
