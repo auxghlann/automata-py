@@ -6,6 +6,15 @@ class DFA(BaseFiniteAutomata):
 
     def __init__(self, num_of_states: int,  input_alpha: list[str], init_states: list[str],
                     final_states: list[str] | None = None) -> None:
+        """
+        Initialize a DFA.
+
+        @params
+            num_of_states (int): Number of states in the DFA.
+            input_alpha (list[str]): List of input alphabets.
+            init_states (list[str]): List of initial states.
+            final_states (list[str] | None): List of final states, optional.
+        """
         self._num_of_states: int = num_of_states
         self._input_alpha: list[str] = input_alpha
         self._init_states: list[str]  = init_states
@@ -15,6 +24,15 @@ class DFA(BaseFiniteAutomata):
 
     # implement abstract method from base class
     def validate_input_str(self, input_str: str ) -> bool:
+        """
+        Validate the input string against the DFA.
+
+        @params
+            input_str (str): The input string to validate.
+
+        @return:
+            True if the input string is accepted by the DFA, False otherwise.
+        """
         init_state: State
         
         for state in self._transition_table:
@@ -57,6 +75,9 @@ class DFA(BaseFiniteAutomata):
         # raise ValueError("State does not exist")
     
     def fill_table(self) -> None:
+        """
+        Fill the transition table for the DFA.
+        """
 
         self._create_states()
 
@@ -69,6 +90,9 @@ class DFA(BaseFiniteAutomata):
                 state.add_transition(next_state, inp)
 
     def display_transition_table(self) -> None:
+        """
+        Display the transition table for the DFA.
+        """
 
         print("states ", end="")
 

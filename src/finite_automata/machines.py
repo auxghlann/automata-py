@@ -6,12 +6,29 @@ class Mealy(DFA, BaseFiniteStateMachine):
 
     def __init__(self, num_of_states: int, input_alpha: list[str], 
                  output_alpha: list[str]) -> None:
+        """
+        Initialize a Mealy machine.
+
+        @params:
+            - num_of_states (int): Number of states in the machine.
+            - input_alpha (list[str]): List of input alphabets.
+            - output_alpha (list[str]): List of output alphabets.
+        """
         super().__init__(num_of_states, input_alpha, list("0"))
         self.__output_alpha: list[str] = output_alpha
     
 
     # Implement abstract method
     def get_output(self, input_str: str) -> str:
+        """
+        Get the Mealy Machine output for a given input string.
+
+        @params:
+            input_str (str): The input string.
+
+        @return:
+            str: The output string.
+        """
         machine_output: str = str()
         curr_state: MealyState = self._transition_table[0]
         for char in input_str:
@@ -31,6 +48,9 @@ class Mealy(DFA, BaseFiniteStateMachine):
 
     #Override
     def fill_table(self) -> None:
+        """
+        Fill the transition table for the Mealy machine.
+        """
         self._create_states()
 
         print("Enter state and output (sep by comma) (e.g, Transition (state, input): Next State, Output)")
@@ -44,6 +64,9 @@ class Mealy(DFA, BaseFiniteStateMachine):
 
     #Override
     def display_transition_table(self) -> None:
+        """
+        Display the transition table for the Mealy machine.
+        """
         print("states ", end="")
 
         for inp in self._input_alpha:
@@ -60,11 +83,28 @@ class Moore(DFA, BaseFiniteStateMachine):
 
     def __init__(self, num_of_states: int, input_alpha: list[str], 
                  output_alpha: list[str]) -> None:
+        """
+        Initialize a Moore machine.
+
+        @params:
+            - num_of_states (int): Number of states in the machine.
+            - input_alpha (list[str]): List of input alphabets.
+            - output_alpha (list[str]): List of output alphabets.
+        """
         super().__init__(num_of_states, input_alpha, list("0"))
         self.__output_alpha: list[str] = output_alpha
 
     #implement abstract method
     def get_output(self, input_str: str) -> str:
+        """
+        Get the Moore Machine output for a given input string.
+
+        @params:
+            input_str (str): The input string.
+
+        @return:
+            str: The output string.
+        """
         curr_state: MooreState = self._transition_table[0]
         machine_output: str = curr_state.get_state_output()
 
@@ -87,6 +127,9 @@ class Moore(DFA, BaseFiniteStateMachine):
 
     #Override
     def fill_table(self) -> None:
+        """
+        Fill the transition table for the Moore machine.
+        """
         self._create_states()
 
         for state in self._transition_table:
@@ -99,6 +142,9 @@ class Moore(DFA, BaseFiniteStateMachine):
     
     #Override
     def display_transition_table(self) -> None:
+        """
+        Display the transition table for the Moore machine.
+        """
         print(" states ", end="")
 
         for inp in self._input_alpha:
