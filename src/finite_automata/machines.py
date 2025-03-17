@@ -1,8 +1,8 @@
 from src.Models.state import MealyState, MooreState
 from src.base.finiteAutomata import BaseFiniteStateMachine
-from src.finite_automata.fa import DFA
+from src.finite_automata.fa import FiniteAutomata
 
-class Mealy(DFA, BaseFiniteStateMachine):
+class Mealy(FiniteAutomata, BaseFiniteStateMachine):
 
     def __init__(self, num_of_states: int, input_alpha: list[str], 
                  output_alpha: list[str]) -> None:
@@ -79,7 +79,7 @@ class Mealy(DFA, BaseFiniteStateMachine):
             print()
 
 
-class Moore(DFA, BaseFiniteStateMachine):
+class Moore(FiniteAutomata, BaseFiniteStateMachine):
 
     def __init__(self, num_of_states: int, input_alpha: list[str], 
                  output_alpha: list[str]) -> None:
