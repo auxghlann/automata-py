@@ -1,5 +1,5 @@
 from __future__ import annotations
-
+from typing import Tuple
 class State():
 
     def __init__(self, state_name: str, isInitState: bool, 
@@ -117,4 +117,50 @@ class MooreState(State):
 
             for _, value in trans.items():
                 print(f"{value} | ", end="")
+    
+class PushdownState(State):
+    
+
+    def __init__(self, state_name: str, isInitState: bool, isFinalState: bool):
+        super().__init__(state_name, isInitState, isFinalState)
+        self.__transitions: list[dict[str, Tuple[State, str, str]]] = list()
+
+    # override and overload
+    def add_transition(self, nxt_state: State, input_char: str, to_pop: str | None = None, 
+                       to_push: str | None = None) -> None:
+        state_trans: dict[str, Tuple[State, str, str]] = {input_char: (nxt_state, to_pop, to_push)}
+        self.__transitions.append(state_trans)
+
+    # override
+    def get_next_trans(self, input_char: str, stack: list[str]) -> PushdownState:
+        for trans in self.__transitions:
+            if input_char in trans:
+                nxt_state, to_pop, to_push = trans[input_char]
+                
+                # Handle stack operations
+                if to_pop and (not stack or stack[-1] != to_pop):
+                    continue  # Skip transition if the stack top does not match to_pop
+                
+                if to_pop:
+                    stack.pop()
+                
+                if to_push:
+                    stack.append(to_push)
+                
+                return nxt_state
+        
+        raise ValueError(f"Did not find next transition for input {input_char}")
+
+    def display_transition(self) -> None:
+        if super().isInitState():
+            print(f" -{super().get_stateName()} | ", end="")
+        elif super().isFinalState():
+            print(f" +{super().get_stateName()} | ", end="")
+        else:
+            print(f"  {super().get_stateName()} | ", end="")
+
+        for trans in self.__transitions:
+            for key, value in trans.items():
+                nxt_state, to_pop, to_push = value
+                print(f" {key} -> {nxt_state.get_stateName()} [pop: {to_pop}, push: {to_push}] | ", end="")
     
