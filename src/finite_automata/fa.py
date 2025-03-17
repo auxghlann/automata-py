@@ -123,13 +123,14 @@ class FiniteAutomata(BaseFiniteAutomata):
 
 class PushDown(FiniteAutomata):
     
-    def __init__(self, num_of_states: int, input_alpha: List[str], stack_symbol: List[str], 
-                 final_states: List[str], start_state: str, start_stk_symbol: str = "$", 
+    def __init__(self, num_of_states: int, input_alpha: List[str], stack_alpha: List[str], 
+                 final_states: List[str], start_state: str, 
                  init_states: List[str] | None = None,) -> None:
         super().__init__(num_of_states, input_alpha, init_states, final_states)
-        self.stack_symbol = stack_symbol
+        self.stack_alpha = stack_alpha
         self.start_state = start_state
-        self.stack: List[str] = [start_stk_symbol]
+        # stack attr for PDA
+        self.stack: List[str] = ["$"]
 
     #overwrite
     def validate_input_str(self, input_str: str) -> bool:
@@ -149,7 +150,7 @@ class PushDown(FiniteAutomata):
         for char in input_str:
             curr_state = curr_state.get_next_trans(char, self.stack)
         
-        return curr_state.isFinalState() and self.stack.pop == self.stack_symbol
+        return curr_state.isFinalState() and self.stack.pop == self.stack_alpha
 
     def init_automaton(self, init_transition_table: list[list[Tuple[str, str, str, str]]]) -> None:
         
@@ -160,6 +161,12 @@ class PushDown(FiniteAutomata):
             init_transition_table (list[list[Tuple[str, str, str, str]]]): 
                 List of transitions where each transition is a tuple of 
                 (input_char, next_state, to_pop, to_push).
+
+                Ex:
+                    (1, q1, e, e) -> if a transition does not push nor pop (e == Epsilon)
+                    (1, q1, char, e) -> if a transition pops a char and does not push anything
+                    (1, q1, e, char) -> if a transition pops nothing and pushes a char
+
         """
 
         self._initialize_states()
