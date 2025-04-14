@@ -124,7 +124,11 @@ class PushdownState(State):
     def __init__(self, state_name: str, isInitState: bool, isFinalState: bool):
         super().__init__(state_name, isInitState, isFinalState)
         self.__transitions: list[dict[str, Tuple[State, str, str]]] = list()
-
+        
+    # override
+    def get_transitions(self) -> list[dict[str, Tuple[State, str, str]]]:
+        return self.__transitions
+    
     # override and overload
     def add_transition(self, nxt_state: State, input_char: str, to_pop: str | None = None, 
                        to_push: str | None = None) -> None:
@@ -133,22 +137,25 @@ class PushdownState(State):
 
     # override
     def get_next_trans(self, input_char: str, stack: list[str]) -> PushdownState:
+        # print(f"Current State: {self.get_stateName()}, Input: {input_char}, Stack Before: {stack}")
         for trans in self.__transitions:
             if input_char in trans:
                 nxt_state, to_pop, to_push = trans[input_char]
-                
+                # print(f"Transition Found: {input_char} -> {nxt_state.get_stateName()}, Pop: {to_pop}, Push: {to_push}")
+
                 # Handle stack operations
                 if to_pop and (not stack or stack[-1] != to_pop):
-                    continue  # Skip transition if the stack top does not match to_pop
-                
+                    raise ValueError(f"Invalid transition: Stack top {stack[-1] if stack else None} != {to_pop}")
+
                 if to_pop:
                     stack.pop()
                 
                 if to_push:
                     stack.append(to_push)
                 
+                print(f"Stack After: {stack}")
                 return nxt_state
-        
+    
         raise ValueError(f"Did not find next transition for input {input_char}")
 
     def display_transition(self) -> None:
