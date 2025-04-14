@@ -1,4 +1,4 @@
-from src.finite_automata.fa import FinteAutomata
+from src.finite_automata.fa import FiniteAutomata
 
 def main() -> None:
     
@@ -14,7 +14,7 @@ def main() -> None:
     init_states = input("Enter the initial state/s (seb by comma): ").split(",")
     fin_states = input("Enter the final state/s (seb by comma): ").split(",")
 
-    dfa: FinteAutomata = FinteAutomata(states, input_alpha, init_states, fin_states)
+    dfa: FiniteAutomata = FiniteAutomata(states, input_alpha, init_states, fin_states)
 
     dfa.fill_table()
 
