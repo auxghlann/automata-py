@@ -150,6 +150,7 @@ class PushDown(FiniteAutomata):
         curr_state: PushdownState = init_state
         unmatched_to_pop = 0  # Counter for unmatched to_pop elements
 
+        # ! Debug
         # print(f"Initial State: {curr_state.get_stateName()}, Stack: {self.stack}")
 
         for char in input_str:
@@ -158,12 +159,27 @@ class PushDown(FiniteAutomata):
             except ValueError as e:
                 # If a transition fails due to unmatched to_pop, increment the counter
                 unmatched_to_pop += 1
+                # ! Debug
                 # print(f"Unmatched to_pop encountered for input '{char}': {e}")
             
+            # ! Debug
             # print(f"After Input: {char}, Current State: {curr_state.get_stateName()}, Stack: {self.stack}, Unmatched to_pop: {unmatched_to_pop}")
 
+        ## Validate if the input string is now empty
+        ## manually move the state using the 'e' input char
+        try:
+            while True:
+                # Attempt to transition using epsilon ('e')
+                curr_state = curr_state.get_next_trans('e', self.stack)
+                # ! Debug
+                # print(f"Moved to epsilon state: {curr_state.get_stateName()}, Stack: {self.stack}")
+        except ValueError:
+            # No more epsilon transitions available
+            pass
+        
         # Validate final state and stack
-        is_accepted = curr_state.isFinalState() and self.stack == ["$"] and unmatched_to_pop == 0
+        is_accepted = curr_state.isFinalState() and (not self.stack and unmatched_to_pop == 0)
+        # ! Debug
         # print(f"Final State: {curr_state.get_stateName()}, Stack: {self.stack}, Unmatched to_pop: {unmatched_to_pop}, Accepted: {is_accepted}")
         return is_accepted
 

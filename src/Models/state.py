@@ -120,7 +120,6 @@ class MooreState(State):
     
 class PushdownState(State):
     
-
     def __init__(self, state_name: str, isInitState: bool, isFinalState: bool):
         super().__init__(state_name, isInitState, isFinalState)
         self.__transitions: list[dict[str, Tuple[State, str, str]]] = list()
@@ -137,10 +136,12 @@ class PushdownState(State):
 
     # override
     def get_next_trans(self, input_char: str, stack: list[str]) -> PushdownState:
+        # ! Debug
         # print(f"Current State: {self.get_stateName()}, Input: {input_char}, Stack Before: {stack}")
         for trans in self.__transitions:
             if input_char in trans:
                 nxt_state, to_pop, to_push = trans[input_char]
+                # ! Debug
                 # print(f"Transition Found: {input_char} -> {nxt_state.get_stateName()}, Pop: {to_pop}, Push: {to_push}")
 
                 # Handle stack operations
@@ -153,7 +154,8 @@ class PushdownState(State):
                 if to_push:
                     stack.append(to_push)
                 
-                print(f"Stack After: {stack}")
+                # ! Debug
+                # print(f"Stack After: {stack}")
                 return nxt_state
     
         raise ValueError(f"Did not find next transition for input {input_char}")
