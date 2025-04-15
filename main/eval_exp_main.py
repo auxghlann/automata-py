@@ -1,70 +1,86 @@
 from src.finite_automata.fa import PushDown
-from typing import Tuple, List
-
-
-def _init_trans_table() -> List[List[Tuple[str, str, str, str]]] :
-
-    init_transition_table: List[List[Tuple[str, str, str, str]]] = [
-        
-        # state q0
-        [
-            ("0", "q3", "e", "e"), ("1", "q3", "e", "e"), ("2", "q3", "e", "e"), ("3", "q3", "e", "e"),   # integer
-            ("4", "q3", "e", "e"), ("5", "q3", "e", "e"), ("6", "q3", "e", "e"), ("7", "q3", "e", "e"),  # integer
-            ("8", "q3", "e", "e"), ("9", "q3"), # integer
-            ("+", "q2", "e", "e"), ("-", "q2", "e", "e"), ("*", "q2", "e", "e"), ("/", "q2", "e", "e"), # operator
-            ("(", "q1", "e", "("), (")", "q2", "e", "e") # parentheiss
-        ],
-
-        # state q1
-        [
-            ("0", "q3", "e", "e"), ("1", "q3", "e", "e"), ("2", "q3", "e", "e"), ("3", "q3", "e", "e"),   # integer
-            ("4", "q3", "e", "e"), ("5", "q3", "e", "e"), ("6", "q3", "e", "e"), ("7", "q3", "e", "e"),  # integer
-            ("8", "q3", "e", "e"), ("9", "q3"), # integer
-            ("+", "q2", "e", "e"), ("-", "q2", "e", "e"), ("*", "q2", "e", "e"), ("/", "q2", "e", "e"), # operator
-            ("(", "q1", "e", "("), (")", "q2", "e", "e")
-        ],
-        
-        # state q2
-        [
-            ("0", "q2", "e", "e"), ("1", "q2", "e", "e"), ("2", "q2", "e", "e"), ("3", "q2", "e", "e"),   # integer
-            ("4", "q2", "e", "e"), ("5", "q2", "e", "e"), ("6", "q2", "e", "e"), ("7", "q2", "e", "e"),  # integer
-            ("8", "q2", "e", "e"), ("9", "q2"), # integer
-            ("+", "q2", "e", "e"), ("-", "q2", "e", "e"), ("*", "q2", "e", "e"), ("/", "q2", "e", "e"), # operator
-            ("(", "q2", "e", "("), (")", "q2", "e", "e") 
-        ],
-
-        # state q3
-        [
-            ("0", "q3", "e", "e"), ("1", "q3", "e", "e"), ("2", "q3", "e", "e"), ("3", "q3", "e", "e"),   # integer
-            ("4", "q3", "e", "e"), ("5", "q3", "e", "e"), ("6", "q3", "e", "e"), ("7", "q3", "e", "e"),  # integer
-            ("8", "q3", "e", "e"), ("9", "q3"), # integer
-            ("+", "q4", "e", "e"), ("-", "q4", "e", "e"), ("*", "q4", "e", "e"), ("/", "q4", "e", "e"), # operator
-            ("(", "q1", "e", "("), (")", "q2", "e", "e") # parentheiss
-        ],
-
-        # state q4
-        [
-            
-        ]
-    ]
-
+from typing import List, Tuple
 
 def main() -> None:
-    
+    # Step 1: Define PDA parameters
+    num_states = 3
+    input_alphabet = ['(', ')', '+', '-', '*', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    stack_alphabet = ['(', '$']
+    final_states = ['2']  # q2 is the final state
+    start_state = 'q0'
+    init_states = ['0']  # q0 is the initial state
 
+    # Step 2: Create the PDA
+    pda = PushDown(num_states, input_alphabet, stack_alphabet, final_states, start_state, init_states)
 
-    input_alpha: List[str] = [
-                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-                "+", "-", "/" ,"*", "^",
-                "(", ")"
+    # Step 3: Define the transition table
+    # Format: List for each state, where each tuple is (input, next_state_name, to_pop, to_push)
+
+    transitions: List[List[Tuple[str, str, str, str]]] = [
+    [   # q0: Start or after '('
+        ('(', 'q0', 'e', '('),     # Push '('
+        (')', 'q0', '(', 'e'),     # Pop '('
+        ('0', 'q1', 'e', 'e'),     # Start of number
+        ('1', 'q1', 'e', 'e'),
+        ('2', 'q1', 'e', 'e'),
+        ('3', 'q1', 'e', 'e'),
+        ('4', 'q1', 'e', 'e'),
+        ('5', 'q1', 'e', 'e'),
+        ('6', 'q1', 'e', 'e'),
+        ('7', 'q1', 'e', 'e'),
+        ('8', 'q1', 'e', 'e'),
+        ('9', 'q1', 'e', 'e')
+    ],
+    [   # q1: In number (possibly multi-digit)
+        ('0', 'q1', 'e', 'e'),     # Continue number
+        ('1', 'q1', 'e', 'e'),
+        ('2', 'q1', 'e', 'e'),
+        ('3', 'q1', 'e', 'e'),
+        ('4', 'q1', 'e', 'e'),
+        ('5', 'q1', 'e', 'e'),
+        ('6', 'q1', 'e', 'e'),
+        ('7', 'q1', 'e', 'e'),
+        ('8', 'q1', 'e', 'e'),
+        ('9', 'q1', 'e', 'e'),
+        ('+', 'q0', 'e', 'e'),     # Operator after number → go to q0 to handle next number or '('
+        ('-', 'q0', 'e', 'e'),
+        ('*', 'q0', 'e', 'e'),
+        ('/', 'q0', 'e', 'e'),
+        (')', 'q1', '(', 'e'),     # Pop '(' on ')'
+        ('e', 'q2', '$', 'e')      # Accept if only '$' left in stack
+    ],
+    [   # q2: Final accepting state (optional)
+        ('e', 'q2', '$', 'e')      # Stay in accept if stack has only '$'
+    ]
+]
+
+    # Step 4: Initialize the PDA with the transition table
+    pda.init_automaton(transitions)
+
+    # Step 5: Display the transition table (for debugging purposes)
+    # pda.display_transition_table()
+
+    # Step 6: Test the PDA with various input strings
+    test_cases = [
+        "1+2",         # valid
+        "(1+2)",       # valid
+        "((1+2)*3)",   # valid
+        "1+(2*3)-4",   # valid
+        "1+",          # invalid (ends with operator)
+        "(1+2",        # invalid (unbalanced parentheses)
+        "1+2)",        # invalid (unbalanced parentheses)
+        "1++2",        # invalid (consecutive operators)
+        "1+*2",        # invalid (operator misuse)
+        "",            # invalid (empty string)
     ]
 
-    stack_symbol: List[str] = ["(", ")"]
+    # Step 7: Validate each test case
+    for string in test_cases:
+        try:
+            result = pda.validate_input_str(string)
+            print(f"'{string}' -> {'ACCEPTED' if result else 'REJECTED'}")
+        except Exception as e:
+            print(f"'{string}' -> ERROR: {e}")
 
-
-    pda: PushDown = PushDown()
-
-    pda.init_automaton()
-    
-    
-    pass
+if __name__ == "__main__":
+    main()
