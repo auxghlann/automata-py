@@ -3,12 +3,16 @@ from typing import List, Tuple
 
 def main() -> None:
     # Step 1: Define PDA parameters
-    num_states = 3
-    input_alphabet = ['(', ')', '+', '-', '*', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-    stack_alphabet = ['(', '$']
-    final_states = ['2']  # q2 is the final state
-    start_state = 'q0'
-    init_states = ['0']  # q0 is the initial state
+    num_states: int = 3
+    input_alphabet: List[str] = [
+        '(', ')', 
+        '+', '-', '*', '/', 
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+    ]
+    stack_alphabet: List[str] = ['(', '$']
+    final_states: List[str] = ['2']  # q2 is the final state
+    start_state: str = 'q0'
+    init_states: List[str] = ['0']  # q0 is the initial state
 
     # Step 2: Create the PDA
     pda = PushDown(num_states, input_alphabet, stack_alphabet, final_states, start_state, init_states)
@@ -18,10 +22,9 @@ def main() -> None:
 
     transitions: List[List[Tuple[str, str, str, str]]] = [
     [   # q0: Start or after '('
-        ('(', 'q0', 'e', '('),     # Push '('
-        (')', 'q0', '(', 'e'),     # Pop '('
-        ('0', 'q1', 'e', 'e'),     # Start of number
-        ('1', 'q1', 'e', 'e'),
+        ('(', 'q0', 'e', '('),     # Push '('              
+        ('0', 'q1', 'e', 'e'),     # Pop '(' 
+        ('1', 'q1', 'e', 'e'),     # Start of number
         ('2', 'q1', 'e', 'e'),
         ('3', 'q1', 'e', 'e'),
         ('4', 'q1', 'e', 'e'),
@@ -66,6 +69,7 @@ def main() -> None:
         "(1+2)",       # valid
         "((1+2)*3)",   # valid
         "1+(2*3)-4",   # valid
+        "(5*3+(4+2))", # valid
         "1+",          # invalid (ends with operator)
         "(1+2",        # invalid (unbalanced parentheses)
         "1+2)",        # invalid (unbalanced parentheses)
